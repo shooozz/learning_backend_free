@@ -1,0 +1,89 @@
+<svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#1a5cff" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#050505" stop-opacity="0" />
+    </radialGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.1" />
+    </filter>
+  </defs>
+  <style>
+    .bg { fill: #050505; }
+    .wire { fill: none; stroke: #4d8dff; stroke-width: 1; opacity: 0.5; }
+    .wire-strong { opacity: 0.85; stroke-width: 1.4; stroke: #6ea1ff; }
+    .node { fill: #9dc1ff; filter: url(#blur); }
+  </style>
+  <rect class="bg" x="0" y="0" width="800" height="800" />
+  <circle cx="400" cy="400" r="345" fill="url(#glow)" />
+  <g>
+    <ellipse class="wire" cx="400" cy="400" rx="92.71" ry="300" />
+    <ellipse class="wire" cx="400" cy="400" rx="176.34" ry="300" />
+    <ellipse class="wire" cx="400" cy="400" rx="242.71" ry="300" />
+    <ellipse class="wire" cx="400" cy="400" rx="285.32" ry="300" />
+    <ellipse class="wire" cx="400" cy="400" rx="300.00" ry="300" />
+    <ellipse class="wire" cx="400" cy="400" rx="285.32" ry="300" />
+    <ellipse class="wire" cx="400" cy="400" rx="242.71" ry="300" />
+    <ellipse class="wire" cx="400" cy="400" rx="176.34" ry="300" />
+    <ellipse class="wire" cx="400" cy="400" rx="92.71" ry="300" />
+    <ellipse class="wire" cx="400" cy="670.29" rx="130.17" ry="44.26" />
+    <ellipse class="wire" cx="400" cy="587.05" rx="234.55" ry="79.75" />
+    <ellipse class="wire" cx="400" cy="466.76" rx="292.48" ry="99.44" />
+    <ellipse class="wire" cx="400" cy="333.24" rx="292.48" ry="99.44" />
+    <ellipse class="wire" cx="400" cy="212.95" rx="234.55" ry="79.75" />
+    <ellipse class="wire" cx="400" cy="129.71" rx="130.17" ry="44.26" />
+    <circle class="wire wire-strong" cx="400" cy="400" r="300" />
+  </g>
+  <g>
+    <circle class="node" cx="530.17" cy="670.29" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="517.27" cy="670.29" r="3.2" style="opacity:0.47" />
+    <circle class="node" cx="481.16" cy="670.29" r="3.2" style="opacity:0.57" />
+    <circle class="node" cx="428.96" cy="670.29" r="3.2" style="opacity:0.62" />
+    <circle class="node" cx="371.04" cy="670.29" r="3.2" style="opacity:0.62" />
+    <circle class="node" cx="318.84" cy="670.29" r="3.2" style="opacity:0.57" />
+    <circle class="node" cx="282.73" cy="670.29" r="3.2" style="opacity:0.47" />
+    <circle class="node" cx="269.83" cy="670.29" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="634.55" cy="587.05" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="611.32" cy="587.05" r="3.2" style="opacity:0.57" />
+    <circle class="node" cx="546.24" cy="587.05" r="3.2" style="opacity:0.75" />
+    <circle class="node" cx="452.19" cy="587.05" r="3.2" style="opacity:0.85" />
+    <circle class="node" cx="347.81" cy="587.05" r="3.2" style="opacity:0.85" />
+    <circle class="node" cx="253.76" cy="587.05" r="3.2" style="opacity:0.75" />
+    <circle class="node" cx="188.68" cy="587.05" r="3.2" style="opacity:0.57" />
+    <circle class="node" cx="165.45" cy="587.05" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="692.48" cy="466.76" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="663.51" cy="466.76" r="3.2" style="opacity:0.62" />
+    <circle class="node" cx="582.36" cy="466.76" r="3.2" style="opacity:0.85" />
+    <circle class="node" cx="465.08" cy="466.76" r="3.2" style="opacity:0.97" />
+    <circle class="node" cx="334.92" cy="466.76" r="3.2" style="opacity:0.97" />
+    <circle class="node" cx="217.64" cy="466.76" r="3.2" style="opacity:0.85" />
+    <circle class="node" cx="136.49" cy="466.76" r="3.2" style="opacity:0.62" />
+    <circle class="node" cx="107.52" cy="466.76" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="692.48" cy="333.24" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="663.51" cy="333.24" r="3.2" style="opacity:0.62" />
+    <circle class="node" cx="582.36" cy="333.24" r="3.2" style="opacity:0.85" />
+    <circle class="node" cx="465.08" cy="333.24" r="3.2" style="opacity:0.97" />
+    <circle class="node" cx="334.92" cy="333.24" r="3.2" style="opacity:0.97" />
+    <circle class="node" cx="217.64" cy="333.24" r="3.2" style="opacity:0.85" />
+    <circle class="node" cx="136.49" cy="333.24" r="3.2" style="opacity:0.62" />
+    <circle class="node" cx="107.52" cy="333.24" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="634.55" cy="212.95" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="611.32" cy="212.95" r="3.2" style="opacity:0.57" />
+    <circle class="node" cx="546.24" cy="212.95" r="3.2" style="opacity:0.75" />
+    <circle class="node" cx="452.19" cy="212.95" r="3.2" style="opacity:0.85" />
+    <circle class="node" cx="347.81" cy="212.95" r="3.2" style="opacity:0.85" />
+    <circle class="node" cx="253.76" cy="212.95" r="3.2" style="opacity:0.75" />
+    <circle class="node" cx="188.68" cy="212.95" r="3.2" style="opacity:0.57" />
+    <circle class="node" cx="165.45" cy="212.95" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="530.17" cy="129.71" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="517.27" cy="129.71" r="3.2" style="opacity:0.47" />
+    <circle class="node" cx="481.16" cy="129.71" r="3.2" style="opacity:0.57" />
+    <circle class="node" cx="428.96" cy="129.71" r="3.2" style="opacity:0.62" />
+    <circle class="node" cx="371.04" cy="129.71" r="3.2" style="opacity:0.62" />
+    <circle class="node" cx="318.84" cy="129.71" r="3.2" style="opacity:0.57" />
+    <circle class="node" cx="282.73" cy="129.71" r="3.2" style="opacity:0.47" />
+    <circle class="node" cx="269.83" cy="129.71" r="3.2" style="opacity:0.35" />
+    <circle class="node" cx="400.00" cy="100.00" r="3.2" style="opacity:1.00" />
+    <circle class="node" cx="400.00" cy="700.00" r="3.2" style="opacity:0.40" />
+  </g>
+</svg>
