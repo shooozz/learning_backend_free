@@ -1,14 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { courses } from '@/data/courses'
+import { api } from '@/lib/api'
+import { useAuth } from './auth-store'
 import { ProgressContext } from './progress-store'
 import type { ProgressContextValue, ProgressSummary } from './progress-store'
 
 const STORAGE_KEY = 'roadmap-hero:progress:v1'
+// Пауза между последним изменением и отправкой на сервер: серия быстрых
+// кликов уходит одним запросом, а не десятью (debounce)
+const SAVE_DEBOUNCE_MS = 800
 
 interface ProgressState {
   lessons: Set<string>
   exercises: Set<string>
+}
+
+interface ProgressPayload {
+  lessons: string[]
+  exercises: string[]
 }
 
 function loadInitialState(): ProgressState {
@@ -24,23 +34,78 @@ function loadInitialState(): ProgressState {
   }
 }
 
+const toPayload = (state: ProgressState): ProgressPayload => ({
+  lessons: [...state.lessons],
+  exercises: [...state.exercises],
+})
+
 const lessonKey = (courseSlug: string, lessonSlug: string) => `${courseSlug}/${lessonSlug}`
 const exerciseKey = (courseSlug: string, lessonSlug: string, exerciseId: string) =>
   `${courseSlug}/${lessonSlug}/${exerciseId}`
 
 export default function ProgressProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
   const [state, setState] = useState<ProgressState>(loadInitialState)
 
+  // "Последняя версия" состояния для колбэков, живущих дольше одного рендера
+  const stateRef = useRef(state)
+  // id пользователя, чей прогресс уже слит с серверным. Пока слияние
+  // не произошло, ничего на сервер не пишем — иначе можно затереть
+  // серверный прогресс локальным, ещё не объединённым
+  const syncedUserIdRef = useRef<number | null>(null)
+
+  // Синхронизация при входе: берём прогресс с сервера и объединяем
+  // с локальным (объединение множеств — прогресс нигде не теряется:
+  // ни сделанный на этом устройстве до входа, ни сделанный на другом)
   useEffect(() => {
+    if (!user) {
+      syncedUserIdRef.current = null
+      return
+    }
+    if (syncedUserIdRef.current === user.id) return
+
+    let cancelled = false
+    api
+      .get<ProgressPayload>('/progress')
+      .then((remote) => {
+        if (cancelled) return
+        const local = stateRef.current
+        setState({
+          lessons: new Set([...local.lessons, ...remote.lessons]),
+          exercises: new Set([...local.exercises, ...remote.exercises]),
+        })
+        // Отправку объединённого прогресса сделает эффект сохранения ниже —
+        // он сработает от setState. Флаг ставим до этого
+        syncedUserIdRef.current = user.id
+      })
+      .catch(() => {
+        // Сервер недоступен — работаем как гость (localStorage),
+        // при следующем изменении user эффект попробует снова
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [user])
+
+  // Сохранение: в localStorage — всегда (кэш и режим гостя),
+  // на сервер — с debounce и только после слияния
+  useEffect(() => {
+    stateRef.current = state
     try {
-      window.localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({ lessons: [...state.lessons], exercises: [...state.exercises] }),
-      )
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(toPayload(state)))
     } catch {
       // localStorage недоступен (например, приватный режим) — прогресс не сохранится
     }
-  }, [state])
+
+    if (!user || syncedUserIdRef.current !== user.id) return
+    const timer = setTimeout(() => {
+      api.put('/progress', toPayload(state)).catch(() => {
+        // Не сохранилось (сеть, истёкшая сессия) — не страшно:
+        // локальная копия цела, при следующем входе всё сольётся
+      })
+    }, SAVE_DEBOUNCE_MS)
+    return () => clearTimeout(timer)
+  }, [state, user])
 
   const setLessonCompleted = useCallback((courseSlug: string, lessonSlug: string, done: boolean) => {
     setState((prev) => {
