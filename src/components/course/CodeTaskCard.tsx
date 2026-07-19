@@ -24,9 +24,9 @@ export default function CodeTaskCard({
   const [solutionOpen, setSolutionOpen] = useState(false)
 
   return (
-    <div className="rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-6">
+    <div className="rounded-xl border border-line bg-surface p-6">
       <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.05em] text-[#1A5CFF]">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.05em] text-brand">
           <Code2 size={14} />
           Задание {number}
         </div>
@@ -38,8 +38,8 @@ export default function CodeTaskCard({
         )}
       </div>
 
-      <h3 className="font-display mt-3 text-lg font-medium text-[#F1F1F1]">{exercise.title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-[#B8B8B8]">
+      <h3 className="font-display mt-3 text-lg font-medium text-fg">{exercise.title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-fg-dim">
         <RichText text={exercise.description} />
       </p>
 
@@ -57,7 +57,7 @@ export default function CodeTaskCard({
                 <Lightbulb size={13} />
                 Подсказка {i + 1}
               </div>
-              <p className="mt-1.5 text-sm leading-relaxed text-[#D6D6D6]">
+              <p className="mt-1.5 text-sm leading-relaxed text-fg-soft">
                 <RichText text={hint} />
               </p>
             </div>
@@ -70,7 +70,7 @@ export default function CodeTaskCard({
           <button
             type="button"
             onClick={() => setHintsShown((n) => n + 1)}
-            className="flex items-center gap-1.5 rounded border border-[#1A1A1A] px-4 py-2 text-sm text-[#B8B8B8] transition-colors hover:border-[#333333] hover:text-[#F1F1F1]"
+            className="flex items-center gap-1.5 rounded border border-line px-4 py-2 text-sm text-fg-dim transition-colors hover:border-line-2 hover:text-fg"
           >
             <Lightbulb size={14} />
             Подсказка ({hintsShown + 1}/{exercise.hints.length})
@@ -79,7 +79,7 @@ export default function CodeTaskCard({
         <button
           type="button"
           onClick={() => setSolutionOpen((open) => !open)}
-          className="flex items-center gap-1.5 rounded border border-[#1A1A1A] px-4 py-2 text-sm text-[#B8B8B8] transition-colors hover:border-[#333333] hover:text-[#F1F1F1]"
+          className="flex items-center gap-1.5 rounded border border-line px-4 py-2 text-sm text-fg-dim transition-colors hover:border-line-2 hover:text-fg"
         >
           {solutionOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           {solutionOpen ? 'Скрыть решение' : 'Показать решение'}
@@ -88,21 +88,21 @@ export default function CodeTaskCard({
 
       {solutionOpen && (
         <div className="mt-4">
-          <p className="mb-3 text-xs text-[#8A8A8A]">
+          <p className="mb-3 text-xs text-fg-muted">
             Сначала попробуйте решить самостоятельно — так материал закрепится намного лучше.
           </p>
           <CodeBlock code={exercise.solution} language={exercise.language} filename="Решение" />
         </div>
       )}
 
-      <div className="mt-5 border-t border-[#1A1A1A] pt-5">
+      <div className="mt-5 border-t border-line pt-5">
         <button
           type="button"
           onClick={() => setExerciseCompleted(courseSlug, lessonSlug, exercise.id, !completed)}
           className={`flex items-center gap-2 rounded px-5 py-2.5 text-sm font-medium transition-colors ${
             completed
               ? 'border border-green-400/40 bg-green-400/10 text-green-400 hover:bg-green-400/15'
-              : 'bg-[#1A5CFF] text-[#050505] hover:bg-[#1145CC]'
+              : 'bg-brand text-brand-contrast hover:bg-brand-strong'
           }`}
         >
           {completed ? <CheckCircle2 size={16} /> : <Circle size={16} />}

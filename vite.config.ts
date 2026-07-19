@@ -4,9 +4,19 @@ import { defineConfig } from "vite"
 import { inspectAttr } from 'kimi-plugin-inspect-react'
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: './',
-  plugins: [inspectAttr(), react()],
+export default defineConfig(({ command }) => ({
+  // Абсолютный base обязателен для SPA с BrowserRouter: с относительным './'
+  // при заходе сразу на /courses/python-basics браузер искал бы ассеты
+  // по пути /courses/assets/... и получал бы index.html вместо JS
+  base: '/',
+  // inspectAttr — dev-инспектор: добавляет каждому элементу атрибут
+  // code-path="файл:строка". В production-сборке ему не место —
+  // это лишние сотни строк в бандле и утечка структуры исходников
+  plugins: [...(command === 'serve' ? [inspectAttr()] : []), react()],
+  preview: {
+    host: '127.0.0.1',
+    port: 4173,
+  },
   server: {
     host: '127.0.0.1',
     port: 3000,
@@ -24,4 +34,4 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-});
+}));

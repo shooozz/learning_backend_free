@@ -119,18 +119,18 @@ export default function TimelineSection() {
     <section
       id="timeline"
       ref={sectionRef}
-      className="relative w-full"
-      style={{ background: '#050505', paddingTop: '100px', paddingBottom: '200px' }}
+      className="relative w-full bg-base"
+      style={{ paddingTop: '100px', paddingBottom: '200px' }}
     >
       {/* Section header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 text-center">
-        <span className="text-[#1A5CFF] text-xs tracking-[0.05em] uppercase font-semibold">
+        <span className="text-brand text-xs tracking-[0.05em] uppercase font-semibold">
           Программа обучения
         </span>
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-white mt-4 tracking-[-0.02em]">
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-fg mt-4 tracking-[-0.02em]">
           6 этапов до backend-разработчика
         </h2>
-        <p className="mt-4 text-[#8A8A8A] text-base max-w-lg mx-auto">
+        <p className="mt-4 text-fg-muted text-base max-w-lg mx-auto">
           Каждый этап включает теорию, практические задания и проектную работу
         </p>
       </div>
@@ -140,21 +140,22 @@ export default function TimelineSection() {
         {/* Center line - desktop only */}
         <div
           ref={lineRef}
-          className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-[#1A1A1A]"
+          className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-surface-2"
           style={{ transform: 'translateX(-50%)' }}
         >
           <div
             ref={progressRef}
-            className="w-full bg-gradient-to-b from-[#1A5CFF] to-[#1145CC]"
+            className="w-full bg-gradient-to-b from-brand to-brand-strong"
             style={{ height: '0%' }}
           />
         </div>
 
         {/* Progress indicator dot */}
         <div
-          className="hidden lg:block fixed left-1/2 top-1/2 w-3 h-3 rounded-full bg-[#1A5CFF] z-20 point-pulse"
+          className="hidden lg:block fixed left-1/2 top-1/2 w-3 h-3 rounded-full bg-brand z-20 point-pulse"
           style={{
-            boxShadow: '0 0 20px rgba(26, 92, 255, 0.6)',
+            // Свечение из токена темы: оттенок и интенсивность меняются вместе с темой
+            boxShadow: '0 0 20px var(--glow)',
           }}
         />
 
@@ -190,25 +191,25 @@ export default function TimelineSection() {
 
                   {/* Text content */}
                   <div className={`w-full lg:w-1/2 ${isLeft ? 'lg:text-left' : 'lg:text-right'}`}>
-                    <span className="text-[#1A5CFF] text-xs tracking-[0.05em] uppercase font-semibold">
+                    <span className="text-brand text-xs tracking-[0.05em] uppercase font-semibold">
                       ЭТАП {stage.id}
                     </span>
-                    <h3 className="font-display text-2xl sm:text-3xl font-medium text-[#F1F1F1] mt-2">
+                    <h3 className="font-display text-2xl sm:text-3xl font-medium text-fg mt-2">
                       {stage.title}
                     </h3>
-                    <p className="mt-3 text-[#8A8A8A] text-[15px] leading-relaxed">
+                    <p className="mt-3 text-fg-muted text-[15px] leading-relaxed">
                       {stage.description}
                     </p>
                     <ul className={`mt-5 space-y-2 ${isLeft ? '' : 'lg:ml-auto'}`}>
                       {stage.topics.map((topic) => (
                         <li
                           key={topic}
-                          className={`flex items-center gap-3 text-sm text-[#F1F1F1] ${
+                          className={`flex items-center gap-3 text-sm text-fg ${
                             isLeft ? '' : 'lg:flex-row-reverse'
                           }`}
                         >
                           <span
-                            className="w-2 h-2 rounded-full bg-[#1A5CFF] flex-shrink-0"
+                            className="w-2 h-2 rounded-full bg-brand flex-shrink-0"
                           />
                           <span>{topic}</span>
                         </li>
@@ -216,7 +217,7 @@ export default function TimelineSection() {
                     </ul>
                     <Link
                       to={`/courses/${stage.courseSlug}`}
-                      className={`mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#1A5CFF] transition-colors hover:text-[#6E9BFF] ${
+                      className={`mt-6 inline-flex items-center gap-2 text-sm font-medium text-brand transition-colors hover:text-brand-strong ${
                         isLeft ? '' : 'lg:flex-row-reverse'
                       }`}
                     >
@@ -233,15 +234,15 @@ export default function TimelineSection() {
 
       {/* CTA Section */}
       <div id="contact" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-40 text-center">
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-white tracking-[-0.02em]">
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-fg tracking-[-0.02em]">
           Готовы начать путь?
         </h2>
-        <p className="mt-4 text-[#8A8A8A] text-base max-w-lg mx-auto">
+        <p className="mt-4 text-fg-muted text-base max-w-lg mx-auto">
           Все 6 модулей с уроками и практическими заданиями уже доступны — начните прямо сейчас
         </p>
         <Link
           to="/courses"
-          className="mt-8 inline-block bg-[#1A5CFF] text-[#050505] font-medium px-10 py-4 rounded hover:bg-[#1145CC] transition-colors duration-300 text-base"
+          className="mt-8 inline-block bg-brand text-brand-contrast font-medium px-10 py-4 rounded hover:bg-brand-strong transition-colors duration-300 text-base"
         >
           Начать обучение
         </Link>

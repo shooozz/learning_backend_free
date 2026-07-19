@@ -5,7 +5,6 @@ import express from 'express'
 import { config } from './config.js'
 import { HttpError } from './lib/http-error.js'
 import { errorHandler } from './middleware/error-handler.js'
-import { rateLimit } from './middleware/rate-limit.js'
 import { authRouter } from './routes/auth.routes.js'
 import { progressRouter } from './routes/progress.routes.js'
 
@@ -16,6 +15,14 @@ import { progressRouter } from './routes/progress.routes.js'
 export function createApp(): express.Express {
   const app = express()
 
+  // За реверс-прокси (Render, Railway, nginx) реальный IP клиента приходит
+  // в заголовке X-Forwarded-For; без trust proxy req.ip — это IP самого
+  // прокси, и rate-limiter считал бы всех пользователей одним клиентом.
+  // Включайте, только когда сервер действительно стоит за прокси
+  if (process.env.TRUST_PROXY) {
+    app.set('trust proxy', Number(process.env.TRUST_PROXY) || 1)
+  }
+
   // Body с лимитом: JSON больше 256 КБ здесь легитимно не бывает
   app.use(express.json({ limit: '256kb' }))
   app.use(cookieParser())
@@ -25,8 +32,11 @@ export function createApp(): express.Express {
     res.json({ status: 'ok' })
   })
 
-  // Rate-limiter только на авторизацию — именно её пытаются перебирать
-  app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, max: 30 }), authRouter)
+  // Rate-limiter навешивается ВНУТРИ authRouter и только на login/register —
+  // именно их перебирают. GET /auth/me под лимит не попадает: фронтенд
+  // вызывает его при каждой загрузке страницы, и общий лимит на весь
+  // /api/auth легитимные пользователи исчерпывали бы обычными обновлениями
+  app.use('/api/auth', authRouter)
   app.use('/api/progress', progressRouter)
 
   // Неизвестный /api-маршрут — явный 404 в том же JSON-формате

@@ -5,10 +5,15 @@ import { HttpError } from '../lib/http-error.js'
 import { signAuthToken } from '../lib/jwt.js'
 import { DUMMY_PASSWORD_HASH_PROMISE, hashPassword, verifyPassword } from '../lib/password.js'
 import { AUTH_COOKIE, requireAuth } from '../middleware/auth.js'
+import { rateLimit } from '../middleware/rate-limit.js'
 import { createUser, findUserByEmail, findUserById } from '../repositories/users.repo.js'
 import { credentialsSchema } from '../schemas.js'
 
 export const authRouter = Router()
+
+// Лимит только на эндпоинты с паролем: их перебирают. Общий инстанс —
+// попытки register и login с одного IP делят один счётчик
+const credentialsLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30 })
 
 function setAuthCookie(res: Response, userId: number): void {
   res.cookie(AUTH_COOKIE, signAuthToken(userId), {
@@ -21,7 +26,7 @@ function setAuthCookie(res: Response, userId: number): void {
 }
 
 // POST /api/auth/register — создать аккаунт и сразу войти
-authRouter.post('/register', async (req, res) => {
+authRouter.post('/register', credentialsLimiter, async (req, res) => {
   const { email, password } = credentialsSchema.parse(req.body)
 
   if (findUserByEmail(email)) {
@@ -34,7 +39,7 @@ authRouter.post('/register', async (req, res) => {
 })
 
 // POST /api/auth/login — вход по email и паролю
-authRouter.post('/login', async (req, res) => {
+authRouter.post('/login', credentialsLimiter, async (req, res) => {
   const { email, password } = credentialsSchema.parse(req.body)
   const user = findUserByEmail(email)
 

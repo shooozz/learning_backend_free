@@ -36,21 +36,21 @@ export default function QuizCard({ exercise, courseSlug, lessonSlug, number }: Q
 
   const optionClasses = (index: number): string => {
     if (solved && index === exercise.correctIndex) {
-      return 'border-green-400/40 bg-green-400/10 text-[#F1F1F1]'
+      return 'border-green-400/40 bg-green-400/10 text-fg'
     }
     if (wrong && index === selected) {
-      return 'border-red-400/40 bg-red-400/10 text-[#F1F1F1]'
+      return 'border-red-400/40 bg-red-400/10 text-fg'
     }
     if (!solved && index === selected) {
-      return 'border-[#1A5CFF] bg-[#1A5CFF]/10 text-[#F1F1F1]'
+      return 'border-brand bg-brand/10 text-fg'
     }
-    return 'border-[#1A1A1A] text-[#B8B8B8] hover:border-[#333333] hover:text-[#F1F1F1]'
+    return 'border-line text-fg-dim hover:border-line-2 hover:text-fg'
   }
 
   return (
-    <div className="rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-6">
+    <div className="rounded-xl border border-line bg-surface p-6">
       <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.05em] text-[#1A5CFF]">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.05em] text-brand">
           <HelpCircle size={14} />
           Вопрос {number}
         </div>
@@ -62,7 +62,7 @@ export default function QuizCard({ exercise, courseSlug, lessonSlug, number }: Q
         )}
       </div>
 
-      <p className="mt-3 text-[15px] leading-relaxed text-[#F1F1F1]">
+      <p className="mt-3 text-[15px] leading-relaxed text-fg">
         <RichText text={exercise.question} />
       </p>
 
@@ -78,7 +78,7 @@ export default function QuizCard({ exercise, courseSlug, lessonSlug, number }: Q
             }}
             className={`flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left text-sm leading-relaxed transition-colors disabled:cursor-default ${optionClasses(index)}`}
           >
-            <span className="mt-0.5 font-mono text-xs text-[#8A8A8A]">
+            <span className="mt-0.5 font-mono text-xs text-fg-muted">
               {OPTION_LETTERS[index] ?? index + 1}
             </span>
             <span>
@@ -93,7 +93,7 @@ export default function QuizCard({ exercise, courseSlug, lessonSlug, number }: Q
           <div className="text-xs font-semibold uppercase tracking-wide text-green-400">
             Верно
           </div>
-          <p className="mt-2 text-sm leading-relaxed text-[#D6D6D6]">
+          <p className="mt-2 text-sm leading-relaxed text-fg-soft">
             <RichText text={exercise.explanation} />
           </p>
         </div>
@@ -103,7 +103,7 @@ export default function QuizCard({ exercise, courseSlug, lessonSlug, number }: Q
           <button
             type="button"
             onClick={retry}
-            className="flex items-center gap-1.5 rounded border border-[#1A1A1A] px-4 py-2 text-sm text-[#F1F1F1] transition-colors hover:border-[#333333]"
+            className="flex items-center gap-1.5 rounded border border-line px-4 py-2 text-sm text-fg transition-colors hover:border-line-2"
           >
             <RotateCcw size={14} />
             Попробовать ещё раз
@@ -114,7 +114,7 @@ export default function QuizCard({ exercise, courseSlug, lessonSlug, number }: Q
           type="button"
           onClick={submit}
           disabled={selected === null}
-          className="mt-5 rounded bg-[#1A5CFF] px-6 py-2.5 text-sm font-medium text-[#050505] transition-colors hover:bg-[#1145CC] disabled:cursor-not-allowed disabled:opacity-40"
+          className="mt-5 rounded bg-brand px-6 py-2.5 text-sm font-medium text-brand-contrast transition-colors hover:bg-brand-strong disabled:cursor-not-allowed disabled:opacity-40"
         >
           Проверить
         </button>

@@ -115,19 +115,18 @@ export default function MethodsSection() {
     <section
       id="methods"
       ref={sectionRef}
-      className="relative w-full py-24 lg:py-32"
-      style={{ background: '#050505' }}
+      className="relative w-full py-24 lg:py-32 bg-base"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <span className="text-[#1A5CFF] text-xs tracking-[0.05em] uppercase font-semibold">
+          <span className="text-brand text-xs tracking-[0.05em] uppercase font-semibold">
             Методы обучения
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-white mt-4 tracking-[-0.02em]">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-fg mt-4 tracking-[-0.02em]">
             Научно обоснованный подход
           </h2>
-          <p className="mt-4 text-[#8A8A8A] text-base max-w-2xl mx-auto">
+          <p className="mt-4 text-fg-muted text-base max-w-2xl mx-auto">
             Мы используем методы, подтверждённые исследованиями когнитивной психологии, 
             для максимальной эффективности обучения
           </p>
@@ -141,28 +140,28 @@ export default function MethodsSection() {
               ref={(el) => {
                 if (el) cardsRef.current[index] = el
               }}
-              className="group relative bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl p-6 hover:border-[#1A5CFF]/40 transition-all duration-500"
+              className="group relative bg-surface border border-line rounded-xl p-6 hover:border-brand/40 transition-all duration-500"
             >
               {/* Icon */}
-              <div className="w-12 h-12 rounded-lg bg-[#1A5CFF]/10 border border-[#1A5CFF]/20 flex items-center justify-center text-[#1A5CFF] mb-5 group-hover:bg-[#1A5CFF]/20 transition-colors duration-300">
+              <div className="w-12 h-12 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand mb-5 group-hover:bg-brand/20 transition-colors duration-300">
                 {method.icon}
               </div>
 
               {/* Title */}
-              <h3 className="font-display text-xl font-medium text-[#F1F1F1] mb-2">
+              <h3 className="font-display text-xl font-medium text-fg mb-2">
                 {method.title}
               </h3>
 
               {/* Description */}
-              <p className="text-[#8A8A8A] text-sm leading-relaxed mb-4">
+              <p className="text-fg-muted text-sm leading-relaxed mb-4">
                 {method.description}
               </p>
 
               {/* Details list */}
               <ul className="space-y-2">
                 {method.details.map((detail) => (
-                  <li key={detail} className="flex items-start gap-2 text-sm text-[#F1F1F1]/80">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#1A5CFF] mt-1.5 flex-shrink-0" />
+                  <li key={detail} className="flex items-start gap-2 text-sm text-fg/80">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand mt-1.5 flex-shrink-0" />
                     <span>{detail}</span>
                   </li>
                 ))}
@@ -171,7 +170,7 @@ export default function MethodsSection() {
               {/* Hover glow */}
               <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                 style={{
-                  background: 'radial-gradient(ellipse at center, rgba(26, 92, 255, 0.05) 0%, transparent 70%)',
+                  background: 'radial-gradient(ellipse at center, rgb(var(--t-brand) / 0.05) 0%, transparent 70%)',
                 }}
               />
             </div>

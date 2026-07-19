@@ -28,6 +28,13 @@ async function request<T>(path: string, method: string, body?: unknown): Promise
 
   const data: unknown = await response.json().catch(() => null)
 
+  // Ответ 200, но не JSON — значит, на этом хостинге вместо API отдаётся
+  // что-то другое (например, index.html на статическом деплое). Считаем,
+  // что API недоступен, как и при сетевой ошибке.
+  if (response.ok && data === null) {
+    throw new ApiError(0, 'API недоступен в этой сборке.')
+  }
+
   if (!response.ok) {
     // Сервер всегда отвечает форматом { error: "..." } — показываем его текст
     const message =

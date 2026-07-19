@@ -7,6 +7,35 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Семантические токены тем (см. src/index.css). Именно их используют
+        // компоненты платформы: bg-base, bg-surface, border-line, text-fg,
+        // text-fg-muted, text-brand и т.д. RGB-триплеты в переменных
+        // позволяют модификаторы прозрачности: bg-brand/10, bg-surface/60.
+        //
+        // ВАЖНО: токен фона страницы объявлен ниже в backgroundColor, а не здесь.
+        // Цвет с именем `base` в colors сгенерировал бы утилиту `.text-base { color }`,
+        // которая перебивает одноимённую ШРИФТОВУЮ утилиту text-base (1rem)
+        // и красит текст в цвет фона — текст становится невидимым.
+        surface: {
+          DEFAULT: "rgb(var(--t-surface) / <alpha-value>)",
+          2: "rgb(var(--t-surface-2) / <alpha-value>)",
+        },
+        line: {
+          DEFAULT: "rgb(var(--t-line) / <alpha-value>)",
+          2: "rgb(var(--t-line-2) / <alpha-value>)",
+        },
+        fg: {
+          DEFAULT: "rgb(var(--t-fg) / <alpha-value>)",
+          soft: "rgb(var(--t-fg-soft) / <alpha-value>)",
+          dim: "rgb(var(--t-fg-dim) / <alpha-value>)",
+          muted: "rgb(var(--t-fg-muted) / <alpha-value>)",
+          faint: "rgb(var(--t-fg-faint) / <alpha-value>)",
+        },
+        brand: {
+          DEFAULT: "rgb(var(--t-brand) / <alpha-value>)",
+          strong: "rgb(var(--t-brand-strong) / <alpha-value>)",
+          contrast: "rgb(var(--t-brand-contrast) / <alpha-value>)",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -50,6 +79,10 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      // Фон страницы: только bg-base (см. комментарий в colors выше)
+      backgroundColor: {
+        base: "rgb(var(--t-bg) / <alpha-value>)",
       },
       borderRadius: {
         xl: "calc(var(--radius) + 4px)",
