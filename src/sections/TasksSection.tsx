@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { CheckCircle2, Circle, ChevronDown, ChevronUp, Code2, Database, Server, Container, Cpu, Briefcase } from 'lucide-react'
+import { useProgress } from '@/context/progress-store'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -95,31 +96,12 @@ const difficultyLabels = {
   hard: { text: 'Сложный', color: 'text-red-400 bg-red-400/10 border-red-400/20' },
 }
 
-const TASKS_STORAGE_KEY = 'roadmap-hero:landing-tasks:v1'
-
-function loadCompletedTasks(): Set<string> {
-  try {
-    const raw = window.localStorage.getItem(TASKS_STORAGE_KEY)
-    if (!raw) return new Set()
-    const parsed = JSON.parse(raw) as unknown
-    return new Set(Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === 'string') : [])
-  } catch {
-    return new Set()
-  }
-}
-
 export default function TasksSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const [expandedStage, setExpandedStage] = useState<number | null>(1)
-  const [completedTasks, setCompletedTasks] = useState<Set<string>>(loadCompletedTasks)
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify([...completedTasks]))
-    } catch {
-      // localStorage недоступен — чек-лист не сохранится между сессиями
-    }
-  }, [completedTasks])
+  // Чек-лист хранится в общем контексте прогресса: сохраняется в localStorage
+  // и синхронизируется с аккаунтом так же, как уроки и задачи сборников
+  const { isTaskCompleted, setTaskCompleted } = useProgress()
 
   useEffect(() => {
     const section = sectionRef.current
@@ -154,15 +136,7 @@ export default function TasksSection() {
   }, [])
 
   const toggleTask = (taskId: string) => {
-    setCompletedTasks((prev) => {
-      const next = new Set(prev)
-      if (next.has(taskId)) {
-        next.delete(taskId)
-      } else {
-        next.add(taskId)
-      }
-      return next
-    })
+    setTaskCompleted(taskId, !isTaskCompleted(taskId))
   }
 
   const toggleStage = (stage: number) => {
@@ -170,39 +144,41 @@ export default function TasksSection() {
   }
 
   const totalTasks = taskCategories.reduce((acc, cat) => acc + cat.tasks.length, 0)
-  const completedCount = completedTasks.size
+  const completedCount = taskCategories.reduce(
+    (acc, cat) => acc + cat.tasks.filter((t) => isTaskCompleted(t.id)).length,
+    0,
+  )
   const progressPercent = Math.round((completedCount / totalTasks) * 100)
 
   return (
     <section
       id="tasks"
       ref={sectionRef}
-      className="relative w-full py-24 lg:py-32"
-      style={{ background: '#050505' }}
+      className="relative w-full py-24 lg:py-32 bg-base"
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="tasks-header text-center mb-12">
-          <span className="text-[#1A5CFF] text-xs tracking-[0.05em] uppercase font-semibold">
+          <span className="text-brand text-xs tracking-[0.05em] uppercase font-semibold">
             Практические задания
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-white mt-4 tracking-[-0.02em]">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-fg mt-4 tracking-[-0.02em]">
             Закрепляйте знания на практике
           </h2>
-          <p className="mt-4 text-[#8A8A8A] text-base max-w-2xl mx-auto">
+          <p className="mt-4 text-fg-muted text-base max-w-2xl mx-auto">
             Каждое задание спроектировано для применения полученных знаний в реальных сценариях
           </p>
         </div>
 
         {/* Progress bar */}
-        <div className="mb-12 bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl p-6">
+        <div className="mb-12 bg-surface border border-line rounded-xl p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[#F1F1F1] text-sm font-medium">Общий прогресс</span>
-            <span className="text-[#1A5CFF] text-sm font-semibold">{completedCount} / {totalTasks} ({progressPercent}%)</span>
+            <span className="text-fg text-sm font-medium">Общий прогресс</span>
+            <span className="text-brand text-sm font-semibold">{completedCount} / {totalTasks} ({progressPercent}%)</span>
           </div>
-          <div className="w-full h-2 bg-[#1A1A1A] rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-surface-2 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#1A5CFF] to-[#1145CC] rounded-full transition-all duration-700"
+              className="h-full bg-gradient-to-r from-brand to-brand-strong rounded-full transition-all duration-700"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -212,13 +188,13 @@ export default function TasksSection() {
         <div className="task-categories-list space-y-4">
           {taskCategories.map((category) => {
             const isExpanded = expandedStage === category.stage
-            const stageCompleted = category.tasks.filter((t) => completedTasks.has(t.id)).length
+            const stageCompleted = category.tasks.filter((t) => isTaskCompleted(t.id)).length
             const stageTotal = category.tasks.length
 
             return (
               <div
                 key={category.stage}
-                className="task-category bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl overflow-hidden hover:border-[#1A1A1A] transition-colors"
+                className="task-category bg-surface border border-line rounded-xl overflow-hidden hover:border-line transition-colors"
               >
                 {/* Category header */}
                 <button
@@ -226,66 +202,66 @@ export default function TasksSection() {
                   className="w-full flex items-center justify-between p-5 text-left"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-[#1A5CFF]/10 border border-[#1A5CFF]/20 flex items-center justify-center text-[#1A5CFF]">
+                    <div className="w-10 h-10 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
                       {category.icon}
                     </div>
                     <div>
                       <div className="flex items-center gap-3">
-                        <h3 className="font-display text-lg font-medium text-[#F1F1F1]">
+                        <h3 className="font-display text-lg font-medium text-fg">
                           {category.title}
                         </h3>
-                        <span className="text-xs text-[#8A8A8A]">
+                        <span className="text-xs text-fg-muted">
                           {stageCompleted}/{stageTotal}
                         </span>
                       </div>
-                      <div className="w-full h-1 bg-[#1A1A1A] rounded-full mt-2 overflow-hidden" style={{ width: '120px' }}>
+                      <div className="w-full h-1 bg-surface-2 rounded-full mt-2 overflow-hidden" style={{ width: '120px' }}>
                         <div
-                          className="h-full bg-[#1A5CFF] rounded-full transition-all duration-500"
+                          className="h-full bg-brand rounded-full transition-all duration-500"
                           style={{ width: `${(stageCompleted / stageTotal) * 100}%` }}
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="text-[#8A8A8A]">
+                  <div className="text-fg-muted">
                     {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                   </div>
                 </button>
 
                 {/* Tasks list */}
                 {isExpanded && (
-                  <div className="border-t border-[#1A1A1A]">
+                  <div className="border-t border-line">
                     {category.tasks.map((task) => {
-                      const isCompleted = completedTasks.has(task.id)
+                      const isCompleted = isTaskCompleted(task.id)
                       const diff = difficultyLabels[task.difficulty]
 
                       return (
                         <div
                           key={task.id}
-                          className={`p-5 border-b border-[#1A1A1A] last:border-b-0 transition-colors ${
-                            isCompleted ? 'bg-[#1A5CFF]/5' : ''
+                          className={`p-5 border-b border-line last:border-b-0 transition-colors ${
+                            isCompleted ? 'bg-brand/5' : ''
                           }`}
                         >
                           <div className="flex items-start gap-4">
                             <button
                               onClick={() => toggleTask(task.id)}
-                              className="mt-0.5 flex-shrink-0 text-[#1A5CFF] hover:scale-110 transition-transform"
+                              className="mt-0.5 flex-shrink-0 text-brand hover:scale-110 transition-transform"
                             >
                               {isCompleted ? (
                                 <CheckCircle2 size={22} />
                               ) : (
-                                <Circle size={22} className="text-[#8A8A8A]" />
+                                <Circle size={22} className="text-fg-muted" />
                               )}
                             </button>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-3 flex-wrap">
-                                <h4 className={`font-medium text-sm ${isCompleted ? 'line-through text-[#8A8A8A]' : 'text-[#F1F1F1]'}`}>
+                                <h4 className={`font-medium text-sm ${isCompleted ? 'line-through text-fg-muted' : 'text-fg'}`}>
                                   {task.title}
                                 </h4>
                                 <span className={`text-xs px-2 py-0.5 rounded-full border ${diff.color}`}>
                                   {diff.text}
                                 </span>
                               </div>
-                              <p className={`mt-1 text-sm leading-relaxed ${isCompleted ? 'text-[#8A8A8A]/60' : 'text-[#8A8A8A]'}`}>
+                              <p className={`mt-1 text-sm leading-relaxed ${isCompleted ? 'text-fg-muted/60' : 'text-fg-muted'}`}>
                                 {task.description}
                               </p>
                             </div>

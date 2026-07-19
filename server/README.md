@@ -55,8 +55,11 @@ src/
 | POST | `/api/auth/login` | `{ email, password }` | `{ user }` + cookie |
 | POST | `/api/auth/logout` | — | `{ ok }`, стирает cookie |
 | GET | `/api/auth/me` | — | `{ user }` или `401` |
-| GET | `/api/progress` 🔒 | — | `{ lessons, exercises, updatedAt }` |
-| PUT | `/api/progress` 🔒 | `{ lessons, exercises }` | `{ ok }` |
+| GET | `/api/progress` 🔒 | — | `{ lessons, exercises, tasks, updatedAt }` |
+| PUT | `/api/progress` 🔒 | `{ lessons, exercises, tasks? }` | `{ ok }` |
+
+Поле `tasks` (чек-лист заданий с лендинга) в PUT опционально: старый клиент
+без него не затирает сохранённый чек-лист — сервер оставляет прежнее значение.
 
 Ошибки всегда в формате `{ "error": "текст" }` с честным HTTP-статусом
 (400 валидация, 401 не авторизован, 409 email занят, 429 слишком часто).
@@ -107,11 +110,10 @@ src/
 
 ## Идеи для развития (в порядке усложнения)
 
-1. **Синхронизировать чек-лист задач** с лендинга (`TasksSection.tsx` всё ещё
-   в localStorage) — добавить поле `tasks` в таблицу, схему и API.
-2. **Refresh-токены**: короткоживущий access-токен + длинный refresh с
+1. **Refresh-токены**: короткоживущий access-токен + длинный refresh с
    хранением в базе — так сессию можно отозвать (сейчас logout лишь стирает cookie).
-3. **Смена/сброс пароля** и подтверждение email.
-4. **Версионированные миграции** вместо `CREATE TABLE IF NOT EXISTS`.
-5. **Интеграционные тесты** роутов через supertest + node:test.
-6. **Переезд на Postgres** — проверка, что слои действительно разделены.
+2. **Смена/сброс пароля** и подтверждение email.
+3. **Версионированные миграции** вместо `CREATE TABLE IF NOT EXISTS`
+   (первый шаг уже виден в `db.ts`: ALTER TABLE для колонки `tasks`).
+4. **Интеграционные тесты** роутов через supertest + node:test.
+5. **Переезд на Postgres** — проверка, что слои действительно разделены.

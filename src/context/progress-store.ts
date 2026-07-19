@@ -11,6 +11,9 @@ export interface ProgressContextValue {
   setLessonCompleted: (courseSlug: string, lessonSlug: string, done: boolean) => void
   isExerciseCompleted: (courseSlug: string, lessonSlug: string, exerciseId: string) => boolean
   setExerciseCompleted: (courseSlug: string, lessonSlug: string, exerciseId: string, done: boolean) => void
+  /** Чек-лист практических заданий с лендинга (TasksSection) */
+  isTaskCompleted: (taskId: string) => boolean
+  setTaskCompleted: (taskId: string, done: boolean) => void
   getCourseProgress: (courseSlug: string) => ProgressSummary
   overall: ProgressSummary
 }

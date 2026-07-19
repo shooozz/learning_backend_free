@@ -6,9 +6,9 @@ import RichText from './RichText'
 const NOTE_STYLES = {
   info: {
     icon: Info,
-    border: 'border-[#1A5CFF]/30',
-    bg: 'bg-[#1A5CFF]/5',
-    text: 'text-[#9DB8FF]',
+    border: 'border-brand/30',
+    bg: 'bg-brand/5',
+    text: 'text-brand',
     label: 'Заметка',
   },
   tip: {
@@ -34,13 +34,13 @@ export default function LessonBlocks({ blocks }: { blocks: ContentBlock[] }) {
         switch (block.type) {
           case 'heading':
             return (
-              <h2 key={index} className="font-display pt-4 text-2xl font-medium text-[#F1F1F1]">
+              <h2 key={index} className="font-display pt-4 text-2xl font-medium text-fg">
                 {block.text}
               </h2>
             )
           case 'text':
             return (
-              <p key={index} className="text-[15px] leading-relaxed text-[#B8B8B8]">
+              <p key={index} className="text-[15px] leading-relaxed text-fg-dim">
                 <RichText text={block.text} />
               </p>
             )
@@ -57,14 +57,14 @@ export default function LessonBlocks({ blocks }: { blocks: ContentBlock[] }) {
             const items = block.items.map((item, i) => (
               <li
                 key={i}
-                className="flex items-start gap-3 text-[15px] leading-relaxed text-[#B8B8B8]"
+                className="flex items-start gap-3 text-[15px] leading-relaxed text-fg-dim"
               >
                 {block.ordered ? (
-                  <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[#1A5CFF]/10 text-[11px] font-semibold text-[#1A5CFF]">
+                  <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand/10 text-[11px] font-semibold text-brand">
                     {i + 1}
                   </span>
                 ) : (
-                  <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#1A5CFF]" />
+                  <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
                 )}
                 <span>
                   <RichText text={item} />
@@ -92,7 +92,7 @@ export default function LessonBlocks({ blocks }: { blocks: ContentBlock[] }) {
                   <Icon size={14} />
                   {style.label}
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-[#D6D6D6]">
+                <p className="mt-2 text-sm leading-relaxed text-fg-soft">
                   <RichText text={block.text} />
                 </p>
               </div>
@@ -100,12 +100,12 @@ export default function LessonBlocks({ blocks }: { blocks: ContentBlock[] }) {
           }
           case 'table':
             return (
-              <div key={index} className="overflow-x-auto rounded-lg border border-[#1A1A1A]">
+              <div key={index} className="overflow-x-auto rounded-lg border border-line">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-[#1A1A1A] bg-[#0A0A0A]">
+                    <tr className="border-b border-line bg-surface">
                       {block.headers.map((header) => (
-                        <th key={header} className="px-4 py-3 font-medium text-[#F1F1F1]">
+                        <th key={header} className="px-4 py-3 font-medium text-fg">
                           {header}
                         </th>
                       ))}
@@ -113,9 +113,9 @@ export default function LessonBlocks({ blocks }: { blocks: ContentBlock[] }) {
                   </thead>
                   <tbody>
                     {block.rows.map((row, r) => (
-                      <tr key={r} className="border-b border-[#1A1A1A] last:border-b-0">
+                      <tr key={r} className="border-b border-line last:border-b-0">
                         {row.map((cell, c) => (
-                          <td key={c} className="px-4 py-3 align-top text-[#B8B8B8]">
+                          <td key={c} className="px-4 py-3 align-top text-fg-dim">
                             <RichText text={cell} />
                           </td>
                         ))}

@@ -1,6 +1,6 @@
 /**
- * Проверка инвариантов учебного контента.
- * Запуск: node --experimental-strip-types scripts/validate-content.ts
+ * Проверка инвариантов учебного контента (уроки + сборники задач).
+ * Запуск: npm run validate (или node --experimental-strip-types scripts/validate-content.ts)
  */
 import { pythonBasicsCourse } from '../src/data/courses/python-basics.ts'
 import { databasesCourse } from '../src/data/courses/databases.ts'
@@ -8,7 +8,31 @@ import { webFrameworksCourse } from '../src/data/courses/web-frameworks.ts'
 import { infrastructureCourse } from '../src/data/courses/infrastructure.ts'
 import { advancedCourse } from '../src/data/courses/advanced.ts'
 import { careerCourse } from '../src/data/courses/career.ts'
-import type { Course } from '../src/types/course.ts'
+// Части сборников импортируются напрямую с расширением .ts: скрипт запускается
+// голым Node (type stripping), который не умеет vite-овские импорты без расширения
+import { problems as pythonBasics1 } from '../src/data/problems/python-basics-1.ts'
+import { problems as pythonBasics2 } from '../src/data/problems/python-basics-2.ts'
+import { problems as databases1 } from '../src/data/problems/databases-1.ts'
+import { problems as databases2 } from '../src/data/problems/databases-2.ts'
+import { problems as webFrameworks1 } from '../src/data/problems/web-frameworks-1.ts'
+import { problems as webFrameworks2 } from '../src/data/problems/web-frameworks-2.ts'
+import { problems as infrastructure1 } from '../src/data/problems/infrastructure-1.ts'
+import { problems as infrastructure2 } from '../src/data/problems/infrastructure-2.ts'
+import { problems as advanced1 } from '../src/data/problems/advanced-1.ts'
+import { problems as advanced2 } from '../src/data/problems/advanced-2.ts'
+import { problems as career1 } from '../src/data/problems/career-1.ts'
+import { problems as career2 } from '../src/data/problems/career-2.ts'
+import type { Course, Problem, ProblemDifficulty } from '../src/types/course.ts'
+
+// Собираем те же наборы, что и src/data/problems/index.ts
+const problemSets: Record<string, Problem[]> = {
+  'python-basics': [...pythonBasics1, ...pythonBasics2],
+  databases: [...databases1, ...databases2],
+  'web-frameworks': [...webFrameworks1, ...webFrameworks2],
+  infrastructure: [...infrastructure1, ...infrastructure2],
+  advanced: [...advanced1, ...advanced2],
+  career: [...career1, ...career2],
+}
 
 const courses: Course[] = [
   pythonBasicsCourse,
@@ -101,10 +125,69 @@ for (const course of courses) {
   }
 }
 
+// ---------- Сборники задач ----------
+
+const DIFFICULTY_RANK: Record<ProblemDifficulty, number> = { easy: 0, medium: 1, hard: 2 }
+let totalProblems = 0
+
+for (const course of courses) {
+  const problems = problemSets[course.slug] ?? []
+  const где = `сборник ${course.slug}`
+
+  if (problems.length < 50 || problems.length > 100) {
+    errors.push(`${где}: ${problems.length} задач (ожидалось 50–100)`)
+  }
+  totalProblems += problems.length
+
+  const ids = new Set<string>()
+  const indexCounts = new Map<number, number>()
+  let quizTotal = 0
+  let maxRank = 0
+
+  for (const p of problems) {
+    if (ids.has(p.id)) errors.push(`${где}: дубликат id задачи ${p.id}`)
+    ids.add(p.id)
+
+    if (!(p.difficulty in DIFFICULTY_RANK)) {
+      errors.push(`${где} > ${p.id}: неизвестная сложность ${String(p.difficulty)}`)
+      continue
+    }
+    // Сложность не должна убывать: сборник идёт от простых к сложным
+    const rank = DIFFICULTY_RANK[p.difficulty]
+    if (rank < maxRank) errors.push(`${где} > ${p.id}: сложность убывает (${p.difficulty} после более сложной)`)
+    maxRank = Math.max(maxRank, rank)
+
+    if (p.type === 'quiz') {
+      quizTotal += 1
+      if (p.options.length !== 4) errors.push(`${где} > ${p.id}: ${p.options.length} вариантов (нужно ровно 4)`)
+      if (p.correctIndex < 0 || p.correctIndex >= p.options.length) {
+        errors.push(`${где} > ${p.id}: correctIndex ${p.correctIndex} вне границ`)
+      }
+      if (!p.explanation.trim()) errors.push(`${где} > ${p.id}: пустое объяснение`)
+      indexCounts.set(p.correctIndex, (indexCounts.get(p.correctIndex) ?? 0) + 1)
+      if (new Set(p.options.map((o) => o.trim())).size !== p.options.length) {
+        errors.push(`${где} > ${p.id}: одинаковые варианты ответа`)
+      }
+    } else {
+      if (!p.solution.trim()) errors.push(`${где} > ${p.id}: пустое решение`)
+      if (p.hints.length === 0) errors.push(`${где} > ${p.id}: нет подсказок`)
+      if (!p.description.trim()) errors.push(`${где} > ${p.id}: пустое описание`)
+    }
+  }
+
+  // Вырожденное распределение правильных ответов упрощает угадывание
+  for (const [idx, count] of indexCounts) {
+    if (quizTotal >= 10 && count / quizTotal > 0.55) {
+      errors.push(`${где}: ${Math.round((count / quizTotal) * 100)}% квизов с correctIndex=${idx} — перемешайте варианты`)
+    }
+  }
+}
+
 console.log(`Курсов: ${courses.length}`)
 console.log(`Уроков: ${totalLessons}`)
 console.log(`Блоков контента: ${totalBlocks}`)
 console.log(`Упражнений: ${totalQuizzes + totalCodeTasks} (квизов: ${totalQuizzes}, код-заданий: ${totalCodeTasks})`)
+console.log(`Задач в сборниках: ${totalProblems}`)
 
 if (errors.length > 0) {
   console.error(`\nОШИБКИ (${errors.length}):`)

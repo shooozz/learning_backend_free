@@ -31,6 +31,15 @@ db.exec(`
     user_id    INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     lessons    TEXT NOT NULL DEFAULT '[]',
     exercises  TEXT NOT NULL DEFAULT '[]',
+    tasks      TEXT NOT NULL DEFAULT '[]',
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 `)
+
+// Мини-миграция для баз, созданных до появления колонки tasks
+// (чек-лист задач с лендинга). CREATE TABLE IF NOT EXISTS существующую
+// таблицу не меняет, поэтому колонку добавляем отдельно.
+const progressColumns = db.prepare('PRAGMA table_info(progress)').all() as { name: string }[]
+if (!progressColumns.some((c) => c.name === 'tasks')) {
+  db.exec(`ALTER TABLE progress ADD COLUMN tasks TEXT NOT NULL DEFAULT '[]'`)
+}

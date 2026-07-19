@@ -36,7 +36,7 @@ const copy: Record<Mode, { title: string; submit: string; switchHint: string; sw
 export default function AuthPage() {
   const [mode, setMode] = useState<Mode>('login')
   const [serverError, setServerError] = useState<string | null>(null)
-  const { user, login, register: signUp, logout } = useAuth()
+  const { user, apiAvailable, login, register: signUp, logout } = useAuth()
   const navigate = useNavigate()
   usePageTitle(`${copy[mode].title} — Roadmap Hero`)
 
@@ -63,42 +63,58 @@ export default function AuthPage() {
   }
 
   const inputClass =
-    'w-full rounded border border-[#1A1A1A] bg-[#0A0A0A] px-4 py-3 text-sm text-[#F1F1F1] ' +
-    'placeholder:text-[#555] outline-none transition-colors focus:border-[#1A5CFF]'
+    'w-full rounded border border-line bg-base px-4 py-3 text-sm text-fg ' +
+    'placeholder:text-fg-faint outline-none transition-colors focus:border-brand'
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 pt-16">
       <div className="w-full max-w-md">
-        {user ? (
+        {!apiAvailable ? (
+          // Статическая сборка без бэкенда (например, Vercel без API):
+          // аккаунты недоступны, но платформа полностью работает как гость
+          <div className="border border-line rounded-lg p-8 bg-surface/60 text-center">
+            <h1 className="font-display text-2xl font-bold text-fg mb-2">Аккаунты недоступны</h1>
+            <p className="text-sm text-fg-muted mb-6 leading-relaxed">
+              В этой сборке нет API-сервера, поэтому вход не требуется: прогресс сохраняется
+              в браузере автоматически. Как включить аккаунты — см. README проекта.
+            </p>
+            <Link
+              to="/courses"
+              className="inline-block text-sm text-center border border-brand bg-brand text-brand-contrast rounded px-5 py-3 hover:bg-transparent hover:text-brand transition-all duration-300"
+            >
+              К курсам
+            </Link>
+          </div>
+        ) : user ? (
           // Уже авторизован — форма не нужна
-          <div className="border border-[#1A1A1A] rounded-lg p-8 bg-[#0A0A0A]/60 text-center">
-            <h1 className="font-display text-2xl font-bold text-[#F1F1F1] mb-2">Вы уже вошли</h1>
-            <p className="text-sm text-[#888] mb-6">{user.email}</p>
+          <div className="border border-line rounded-lg p-8 bg-surface/60 text-center">
+            <h1 className="font-display text-2xl font-bold text-fg mb-2">Вы уже вошли</h1>
+            <p className="text-sm text-fg-muted mb-6">{user.email}</p>
             <div className="flex flex-col gap-3">
               <Link
                 to="/courses"
-                className="text-sm text-center border border-[#1A5CFF] bg-[#1A5CFF] text-[#050505] rounded px-5 py-3 hover:bg-transparent hover:text-[#1A5CFF] transition-all duration-300"
+                className="text-sm text-center border border-brand bg-brand text-brand-contrast rounded px-5 py-3 hover:bg-transparent hover:text-brand transition-all duration-300"
               >
                 К курсам
               </Link>
               <button
                 onClick={() => void logout()}
-                className="text-sm border border-[#1A1A1A] text-[#888] rounded px-5 py-3 hover:border-[#F1F1F1] hover:text-[#F1F1F1] transition-all duration-300"
+                className="text-sm border border-line text-fg-muted rounded px-5 py-3 hover:border-line-2 hover:text-fg transition-all duration-300"
               >
                 Выйти
               </button>
             </div>
           </div>
         ) : (
-          <div className="border border-[#1A1A1A] rounded-lg p-8 bg-[#0A0A0A]/60">
-            <h1 className="font-display text-2xl font-bold text-[#F1F1F1] mb-1">{copy[mode].title}</h1>
-            <p className="text-sm text-[#888] mb-8">
+          <div className="border border-line rounded-lg p-8 bg-surface/60">
+            <h1 className="font-display text-2xl font-bold text-fg mb-1">{copy[mode].title}</h1>
+            <p className="text-sm text-fg-muted mb-8">
               Прогресс обучения будет привязан к аккаунту и доступен с любого устройства.
             </p>
 
             <form onSubmit={(e) => void handleSubmit(onSubmit)(e)} className="flex flex-col gap-4" noValidate>
               <div>
-                <label htmlFor="email" className="block text-xs text-[#888] mb-1.5">
+                <label htmlFor="email" className="block text-xs text-fg-muted mb-1.5">
                   Email
                 </label>
                 <input
@@ -113,7 +129,7 @@ export default function AuthPage() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-xs text-[#888] mb-1.5">
+                <label htmlFor="password" className="block text-xs text-fg-muted mb-1.5">
                   Пароль
                 </label>
                 <input
@@ -136,15 +152,15 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="mt-2 text-sm border border-[#1A5CFF] bg-[#1A5CFF] text-[#050505] rounded px-5 py-3 hover:bg-transparent hover:text-[#1A5CFF] transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none"
+                className="mt-2 text-sm border border-brand bg-brand text-brand-contrast rounded px-5 py-3 hover:bg-transparent hover:text-brand transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none"
               >
                 {isSubmitting ? 'Секунду…' : copy[mode].submit}
               </button>
             </form>
 
-            <p className="mt-6 text-center text-xs text-[#888]">
+            <p className="mt-6 text-center text-xs text-fg-muted">
               {copy[mode].switchHint}{' '}
-              <button onClick={switchMode} className="text-[#1A5CFF] hover:underline">
+              <button onClick={switchMode} className="text-brand hover:underline">
                 {copy[mode].switchAction}
               </button>
             </p>

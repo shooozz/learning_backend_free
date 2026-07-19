@@ -6,7 +6,7 @@ function renderInline(text: string): ReactNode[] {
   return text.split(INLINE_PATTERN).map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
       return (
-        <strong key={i} className="font-semibold text-[#F1F1F1]">
+        <strong key={i} className="font-semibold text-fg">
           {part.slice(2, -2)}
         </strong>
       )
@@ -15,7 +15,7 @@ function renderInline(text: string): ReactNode[] {
       return (
         <code
           key={i}
-          className="rounded border border-[#1F1F1F] bg-[#141414] px-1.5 py-0.5 font-mono text-[0.85em] text-[#9DB8FF]"
+          className="rounded border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em] text-brand"
         >
           {part.slice(1, -1)}
         </code>

@@ -5,16 +5,78 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --bg: #050505;
-    --accent: #1A5CFF;
-    --accent-dark: #1145CC;
-    --text: #F1F1F1;
-    --text-secondary: #8A8A8A;
-    --surface: #0A0A0A;
-    --surface-border: #1A1A1A;
-    --white: #FFFFFF;
+  /*
+   * Темы оформления. Каждая тема задаёт один и тот же набор токенов --t-*
+   * (RGB-триплеты, чтобы Tailwind мог накладывать прозрачность через
+   * <alpha-value>). Компоненты используют только семантические классы
+   * (bg-base, text-fg, border-line, text-brand…) из tailwind.config.js —
+   * поэтому смена класса темы на <html> перекрашивает всё приложение.
+   *
+   * :root = «чёрная» тема (значения по умолчанию до инициализации
+   * next-themes, чтобы не было вспышки другого цвета при загрузке).
+   */
+  :root,
+  .black {
+    --t-bg: 5 5 5;
+    --t-surface: 10 10 10;
+    --t-surface-2: 26 26 26;
+    --t-line: 26 26 26;
+    --t-line-2: 51 51 51;
+    --t-fg: 241 241 241;
+    --t-fg-soft: 214 214 214;
+    --t-fg-dim: 184 184 184;
+    --t-fg-muted: 138 138 138;
+    --t-fg-faint: 102 102 102;
+    --t-brand: 26 92 255;
+    --t-brand-strong: 17 69 204;
+    --t-brand-contrast: 5 5 5;
     --glow: rgba(26, 92, 255, 0.4);
+  }
+
+  /* «Тёмная» — мягкий графит вместо чистого чёрного */
+  .dark {
+    --t-bg: 19 20 24;
+    --t-surface: 26 28 33;
+    --t-surface-2: 36 38 45;
+    --t-line: 39 42 49;
+    --t-line-2: 59 63 72;
+    --t-fg: 237 238 240;
+    --t-fg-soft: 213 215 219;
+    --t-fg-dim: 182 185 191;
+    --t-fg-muted: 143 147 155;
+    --t-fg-faint: 108 112 120;
+    --t-brand: 61 116 255;
+    --t-brand-strong: 39 92 232;
+    --t-brand-contrast: 12 13 16;
+    --glow: rgba(61, 116, 255, 0.35);
+  }
+
+  /* «Светлая» */
+  .light {
+    --t-bg: 246 246 244;
+    --t-surface: 255 255 255;
+    --t-surface-2: 234 234 231;
+    --t-line: 226 226 222;
+    --t-line-2: 199 199 194;
+    --t-fg: 23 24 28;
+    --t-fg-soft: 52 54 60;
+    --t-fg-dim: 75 78 85;
+    --t-fg-muted: 110 114 122;
+    --t-fg-faint: 153 157 165;
+    --t-brand: 26 79 224;
+    --t-brand-strong: 15 58 184;
+    --t-brand-contrast: 255 255 255;
+    --glow: rgba(26, 92, 255, 0.18);
+  }
+
+  /* Легаси-алиасы: часть стилей ниже и body ссылаются на них */
+  :root {
+    --bg: rgb(var(--t-bg));
+    --text: rgb(var(--t-fg));
+    --text-secondary: rgb(var(--t-fg-muted));
+    --surface: rgb(var(--t-surface));
+    --surface-border: rgb(var(--t-line));
+    --white: #FFFFFF;
 
     --background: 0 0% 2%;
     --foreground: 0 0% 94.5%;
@@ -131,7 +193,7 @@
     left: 0;
     width: 0;
     height: 1px;
-    background-color: var(--accent);
+    background-color: rgb(var(--t-brand));
     transition: width 0.3s ease;
   }
 
@@ -143,19 +205,40 @@
     width: 100%;
   }
 
+  /* Статусные цвета (верно/неверно/сложность) подобраны под тёмный фон:
+     green-400 на белом почти не читается (контраст ~2:1). В светлой теме
+     затемняем их до читаемых оттенков, не трогая разметку компонентов. */
+  .light .text-green-400 {
+    color: #15803d; /* green-700, контраст 4.6:1 на белом */
+  }
+
+  .light .text-amber-400 {
+    color: #b45309; /* amber-700 */
+  }
+
+  .light .text-yellow-400 {
+    color: #a16207; /* yellow-700 — warning-заметки и бейдж «Средний» */
+  }
+
+  .light .text-red-400 {
+    color: #dc2626; /* red-600 */
+  }
+
+  /* Используется только в hero поверх тёмной WebGL-сцены,
+     поэтому цвета фиксированные, а не тематические */
   .tag-item {
-    border: 1px solid var(--surface-border);
+    border: 1px solid #1a1a1a;
     border-radius: 16px;
     padding: 6px 14px;
     font-size: 13px;
-    color: var(--text-secondary);
+    color: #8a8a8a;
     transition: all 0.25s ease;
     white-space: nowrap;
   }
 
   .tag-item:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: rgb(var(--t-brand));
+    color: rgb(var(--t-brand));
   }
 
   .timeline-card {

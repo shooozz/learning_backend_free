@@ -54,10 +54,10 @@ export default function LessonPage() {
       <div className="lg:grid lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
         {/* Боковая навигация по модулю */}
         <aside className="hidden lg:block">
-          <div className="sticky top-24 rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-5">
+          <div className="sticky top-24 rounded-xl border border-line bg-surface p-5">
             <Link
               to={`/courses/${course.slug}`}
-              className="flex items-center gap-2 text-sm text-[#8A8A8A] transition-colors hover:text-[#F1F1F1]"
+              className="flex items-center gap-2 text-sm text-fg-muted transition-colors hover:text-fg"
             >
               <ArrowLeft size={14} />
               <span className="truncate">{course.title}</span>
@@ -72,16 +72,16 @@ export default function LessonPage() {
                     to={`/courses/${course.slug}/${l.slug}`}
                     className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-colors ${
                       active
-                        ? 'bg-[#1A5CFF]/10 text-[#F1F1F1]'
-                        : 'text-[#8A8A8A] hover:bg-[#111111] hover:text-[#F1F1F1]'
+                        ? 'bg-brand/10 text-fg'
+                        : 'text-fg-muted hover:bg-surface-2 hover:text-fg'
                     }`}
                   >
                     {done ? (
-                      <CheckCircle2 size={15} className="flex-shrink-0 text-[#1A5CFF]" />
+                      <CheckCircle2 size={15} className="flex-shrink-0 text-brand" />
                     ) : (
                       <span
                         className={`flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-full border font-mono text-[10px] ${
-                          active ? 'border-[#1A5CFF] text-[#1A5CFF]' : 'border-[#333333]'
+                          active ? 'border-brand text-brand' : 'border-line-2'
                         }`}
                       >
                         {i + 1}
@@ -99,15 +99,15 @@ export default function LessonPage() {
         <article className="min-w-0">
           <Link
             to={`/courses/${course.slug}`}
-            className="inline-flex items-center gap-2 text-sm text-[#8A8A8A] transition-colors hover:text-[#F1F1F1] lg:hidden"
+            className="inline-flex items-center gap-2 text-sm text-fg-muted transition-colors hover:text-fg lg:hidden"
           >
             <ArrowLeft size={14} />
             {course.title}
           </Link>
 
           <header className="mt-4 lg:mt-0">
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[#8A8A8A]">
-              <span className="font-semibold uppercase tracking-[0.05em] text-[#1A5CFF]">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-fg-muted">
+              <span className="font-semibold uppercase tracking-[0.05em] text-brand">
                 Урок {index + 1} из {course.lessons.length}
               </span>
               <span className="flex items-center gap-1.5">
@@ -121,10 +121,10 @@ export default function LessonPage() {
                 </span>
               )}
             </div>
-            <h1 className="font-display mt-4 text-3xl font-medium tracking-[-0.02em] text-white sm:text-4xl">
+            <h1 className="font-display mt-4 text-3xl font-medium tracking-[-0.02em] text-fg sm:text-4xl">
               {lesson.title}
             </h1>
-            <p className="mt-3 text-base leading-relaxed text-[#8A8A8A]">{lesson.description}</p>
+            <p className="mt-3 text-base leading-relaxed text-fg-muted">{lesson.description}</p>
           </header>
 
           <div className="mt-10">
@@ -134,8 +134,8 @@ export default function LessonPage() {
           {lesson.exercises.length > 0 && (
             <section className="mt-14">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="font-display text-2xl font-medium text-[#F1F1F1]">Практика</h2>
-                <span className="text-sm text-[#8A8A8A]">
+                <h2 className="font-display text-2xl font-medium text-fg">Практика</h2>
+                <span className="text-sm text-fg-muted">
                   {doneExercises}/{lesson.exercises.length} выполнено
                 </span>
               </div>
@@ -143,14 +143,14 @@ export default function LessonPage() {
             </section>
           )}
 
-          <div className="mt-14 border-t border-[#1A1A1A] pt-8">
+          <div className="mt-14 border-t border-line pt-8">
             <button
               type="button"
               onClick={() => setLessonCompleted(course.slug, lesson.slug, !completed)}
               className={`flex items-center gap-2 rounded px-6 py-3 text-sm font-medium transition-colors ${
                 completed
                   ? 'border border-green-400/40 bg-green-400/10 text-green-400 hover:bg-green-400/15'
-                  : 'bg-[#1A5CFF] text-[#050505] hover:bg-[#1145CC]'
+                  : 'bg-brand text-brand-contrast hover:bg-brand-strong'
               }`}
             >
               {completed ? <CheckCircle2 size={16} /> : <Circle size={16} />}
@@ -161,15 +161,15 @@ export default function LessonPage() {
               {prevLesson ? (
                 <Link
                   to={`/courses/${course.slug}/${prevLesson.slug}`}
-                  className="group flex flex-1 items-center gap-3 rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-4 transition-colors hover:border-[#1A5CFF]/40"
+                  className="group flex flex-1 items-center gap-3 rounded-xl border border-line bg-surface p-4 transition-colors hover:border-brand/40"
                 >
                   <ArrowLeft
                     size={16}
-                    className="flex-shrink-0 text-[#8A8A8A] transition-transform group-hover:-translate-x-0.5"
+                    className="flex-shrink-0 text-fg-muted transition-transform group-hover:-translate-x-0.5"
                   />
                   <div className="min-w-0">
-                    <div className="text-xs text-[#8A8A8A]">Предыдущий урок</div>
-                    <div className="truncate text-sm font-medium text-[#F1F1F1]">
+                    <div className="text-xs text-fg-muted">Предыдущий урок</div>
+                    <div className="truncate text-sm font-medium text-fg">
                       {prevLesson.title}
                     </div>
                   </div>
@@ -180,29 +180,29 @@ export default function LessonPage() {
               {nextLesson ? (
                 <Link
                   to={`/courses/${course.slug}/${nextLesson.slug}`}
-                  className="group flex flex-1 items-center justify-end gap-3 rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-4 text-right transition-colors hover:border-[#1A5CFF]/40"
+                  className="group flex flex-1 items-center justify-end gap-3 rounded-xl border border-line bg-surface p-4 text-right transition-colors hover:border-brand/40"
                 >
                   <div className="min-w-0">
-                    <div className="text-xs text-[#8A8A8A]">Следующий урок</div>
-                    <div className="truncate text-sm font-medium text-[#F1F1F1]">
+                    <div className="text-xs text-fg-muted">Следующий урок</div>
+                    <div className="truncate text-sm font-medium text-fg">
                       {nextLesson.title}
                     </div>
                   </div>
                   <ArrowRight
                     size={16}
-                    className="flex-shrink-0 text-[#8A8A8A] transition-transform group-hover:translate-x-0.5"
+                    className="flex-shrink-0 text-fg-muted transition-transform group-hover:translate-x-0.5"
                   />
                 </Link>
               ) : (
                 <Link
                   to={`/courses/${course.slug}`}
-                  className="group flex flex-1 items-center justify-end gap-3 rounded-xl border border-[#1A5CFF]/40 bg-[#1A5CFF]/5 p-4 text-right transition-colors hover:bg-[#1A5CFF]/10"
+                  className="group flex flex-1 items-center justify-end gap-3 rounded-xl border border-brand/40 bg-brand/5 p-4 text-right transition-colors hover:bg-brand/10"
                 >
                   <div>
-                    <div className="text-xs text-[#8A8A8A]">Это был последний урок</div>
-                    <div className="text-sm font-medium text-[#1A5CFF]">Завершить модуль</div>
+                    <div className="text-xs text-fg-muted">Это был последний урок</div>
+                    <div className="text-sm font-medium text-brand">Завершить модуль</div>
                   </div>
-                  <ArrowRight size={16} className="flex-shrink-0 text-[#1A5CFF]" />
+                  <ArrowRight size={16} className="flex-shrink-0 text-brand" />
                 </Link>
               )}
             </div>

@@ -10,6 +10,12 @@ export interface AuthContextValue {
   user: AuthUser | null
   /** true, пока при загрузке страницы идёт проверка сессии (GET /auth/me) */
   initializing: boolean
+  /**
+   * false — API-сервер недоступен (например, статический деплой на Vercel
+   * без бэкенда). Интерфейс входа в этом случае скрывается, платформа
+   * работает в гостевом режиме с localStorage.
+   */
+  apiAvailable: boolean
   login: (email: string, password: string) => Promise<void>
   register: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>

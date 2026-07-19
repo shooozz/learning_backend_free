@@ -48,6 +48,16 @@ export interface CodeExercise {
 
 export type Exercise = QuizExercise | CodeExercise
 
+/** Сложность задачи в сборнике задач модуля */
+export type ProblemDifficulty = 'easy' | 'medium' | 'hard'
+
+/**
+ * Задача из сборника задач модуля (см. src/data/problems/).
+ * Это обычное упражнение (квиз или код-задача) плюс уровень сложности —
+ * поэтому карточки QuizCard/CodeTaskCard работают с ними без изменений.
+ */
+export type Problem = Exercise & { difficulty: ProblemDifficulty }
+
 export interface Lesson {
   slug: string
   title: string

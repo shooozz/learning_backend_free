@@ -22,6 +22,10 @@ const progressKey = z.string().min(1).max(300)
 export const progressSchema = z.object({
   lessons: z.array(progressKey).max(2000),
   exercises: z.array(progressKey).max(10000),
+  // Чек-лист практических заданий с лендинга. Поле опционально для
+  // обратной совместимости: старый клиент, не знающий о tasks, не должен
+  // ни падать на валидации, ни затирать сохранённый чек-лист пустотой
+  tasks: z.array(progressKey).max(1000).optional(),
 })
 
 export type Credentials = z.infer<typeof credentialsSchema>
