@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { LogOut, Menu, User, X } from 'lucide-react'
+import { useAuth } from '@/context/auth-store'
 import { useProgress } from '@/context/progress-store'
 
 const sectionLinks = [
@@ -14,6 +15,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname } = useLocation()
   const { overall } = useProgress()
+  const { user, initializing, logout } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -60,12 +62,34 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <Link
-          to="/courses"
-          className="hidden md:block text-sm border border-[#1A5CFF] text-[#1A5CFF] rounded px-5 py-2 hover:bg-[#1A5CFF] hover:text-[#050505] transition-all duration-300"
-        >
-          {ctaLabel}
-        </Link>
+        <div className="hidden md:flex items-center gap-4">
+          {!initializing &&
+            (user ? (
+              <div className="flex items-center gap-3 text-sm text-[#888]">
+                <span className="flex items-center gap-1.5 max-w-[180px] truncate" title={user.email}>
+                  <User size={14} className="shrink-0 text-[#1A5CFF]" />
+                  {user.email}
+                </span>
+                <button
+                  onClick={() => void logout()}
+                  title="Выйти"
+                  className="hover:text-[#F1F1F1] transition-colors"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            ) : (
+              <Link to="/auth" className={`nav-link text-sm font-normal ${pathname === '/auth' ? 'text-[#1A5CFF]' : ''}`}>
+                Войти
+              </Link>
+            ))}
+          <Link
+            to="/courses"
+            className="text-sm border border-[#1A5CFF] text-[#1A5CFF] rounded px-5 py-2 hover:bg-[#1A5CFF] hover:text-[#050505] transition-all duration-300"
+          >
+            {ctaLabel}
+          </Link>
+        </div>
 
         {/* Mobile burger */}
         <button className="md:hidden text-[#F1F1F1]" onClick={() => setMenuOpen(!menuOpen)}>
@@ -94,6 +118,22 @@ export default function Navbar() {
             >
               Курсы
             </Link>
+            {!initializing &&
+              (user ? (
+                <button
+                  onClick={() => {
+                    void logout()
+                    setMenuOpen(false)
+                  }}
+                  className="text-left text-[#888] text-sm py-2"
+                >
+                  Выйти ({user.email})
+                </button>
+              ) : (
+                <Link to="/auth" onClick={() => setMenuOpen(false)} className="text-left text-[#F1F1F1] text-sm py-2">
+                  Войти
+                </Link>
+              ))}
             <Link
               to="/courses"
               onClick={() => setMenuOpen(false)}

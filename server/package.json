@@ -1,0 +1,27 @@
+{
+  "name": "roadmap-hero-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Учебный backend для Roadmap Hero: авторизация + сохранение прогресса",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.10.1",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.3"
+  }
+}
